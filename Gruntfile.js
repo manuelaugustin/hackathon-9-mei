@@ -39,7 +39,18 @@ module.exports = function(grunt) {
 		  }
 	  },
 	  clean: {
-		  obsolete_scss: ['dist/assets/css/*.scss']
+    	  initial_clean: [ 'dist/**', 'artifact.zip' ],
+		  obsolete_scss: ['dist/assets/css/*.scss'],
+	  },
+	  compress: {
+		  main: {
+			  options: {
+				  archive: 'artifact.zip'
+			  },
+			  files: [
+				  { src: [ './dist/**' ], dest: '/' },
+			  ]
+		  }
 	  }
   });
 
@@ -48,8 +59,9 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-uglify-es');
 	grunt.loadNpmTasks('grunt-sass');
 	grunt.loadNpmTasks('grunt-contrib-clean');
+	grunt.loadNpmTasks('grunt-contrib-compress');
 
 	// Define aliases here.
-  grunt.registerTask('artifact', [ 'copy', 'uglify', 'sass', 'clean' ] );
+  grunt.registerTask('artifact', [ 'clean:initial_clean', 'copy', 'uglify', 'sass', 'clean:obsolete_scss', 'compress' ] );
 
 };
