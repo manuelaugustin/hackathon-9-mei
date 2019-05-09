@@ -1,13 +1,22 @@
+var generateRandomString = require( "./source-files/js/generateRandomString");
+
 /*global module:false*/
 module.exports = function(grunt) {
 
   // Project configuration.
   grunt.initConfig({
+	  copy: {
+		  main: {
+			  files: [
+				  {expand: true, cwd: 'source-files/', src: ['**', '!js/generateRandomString.js'], dest: 'dist/assets'},
+			  ],
+		  },
+	  },
     // Metadata.
     pkg: grunt.file.readJSON('package.json'),
   });
 
-	grunt.loadNpmTasks('grunt-string-replace');
+	grunt.loadNpmTasks('grunt-contrib-copy');
 
   // Define aliases here.
   grunt.registerTask('default', [ 'update-version' ] );
@@ -34,4 +43,23 @@ module.exports = function(grunt) {
       } );
   } );
 
+	grunt.registerTask('licensed-artifact', "Creates licensed-artifact", function() {
+		grunt.task.run( "copy", "set-secret-key" );
+	} );
+
+	grunt.registerTask('set-secret-key', "Sets a (super) secret key", function() {
+		let superSecretKey = generateRandomString(64);
+
+		let file = grunt.file.read( "dist/assets/classes/class.php");
+		file = file.replace( /(\t+const\slicense_key\s=\s\")(super_secret_key_here)(\";\n)/ig, "$1" + superSecretKey + "$3" );
+		grunt.file.write( "dist/assets/classes/class.php", file );
+
+		if( ! grunt.file.exists( "license-keys.json" ) ) {
+			grunt.file.write( "license-keys.json", "[]" )
+		}
+
+		let licenseKeyList = grunt.file.readJSON( "license-keys.json" );
+		licenseKeyList.push( superSecretKey );
+		grunt.file.write( "license-keys.json", JSON.stringify( licenseKeyList ) );
+	} );
 };
