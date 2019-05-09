@@ -5,6 +5,9 @@ module.exports = function(grunt) {
 
   // Project configuration.
   grunt.initConfig({
+	  // Metadata.
+	  pkg: grunt.file.readJSON('package.json'),
+	  clean: ['dist/**', 'artifact.zip'],
 	  copy: {
 		  main: {
 			  files: [
@@ -12,13 +15,24 @@ module.exports = function(grunt) {
 			  ],
 		  },
 	  },
-    // Metadata.
-    pkg: grunt.file.readJSON('package.json'),
+	  compress: {
+		  main: {
+			  options: {
+				  archive: 'artifact.zip'
+			  },
+			  files: [
+				  {src: ['./dist/**'], dest: '/'},
+			  ]
+		  }
+	  },
   });
 
 	grunt.loadNpmTasks('grunt-contrib-copy');
+	grunt.loadNpmTasks('grunt-contrib-compress');
+	grunt.loadNpmTasks('grunt-contrib-clean');
 
-  // Define aliases here.
+
+	// Define aliases here.
   grunt.registerTask('default', [ 'update-version' ] );
   grunt.registerTask('update-version', "Update version number", function( newVersion ) {
     const filesAndRegexes = [
@@ -44,7 +58,7 @@ module.exports = function(grunt) {
   } );
 
 	grunt.registerTask('licensed-artifact', "Creates licensed-artifact", function() {
-		grunt.task.run( "copy", "set-secret-key" );
+		grunt.task.run( "clean", "copy", "set-secret-key", "compress" );
 	} );
 
 	grunt.registerTask('set-secret-key', "Sets a (super) secret key", function() {
