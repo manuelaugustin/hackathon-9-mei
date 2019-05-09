@@ -1,13 +1,21 @@
-# Hackathon - 9 mei 2019
+# Task 3
 
-This branch contains a simple setup for Grunt.
+## End result
 
-Steps used to create this repository:
-`yarn init` - to initialize the `package.json`
-`yarn add grunt` - to add Grunt
+Run `grunt update-version 1.0.1` to update the version in all relevant files.
 
-Created a simple `Gruntfile.js` with only bare-minimal configuration.
+Run `grunt licensed-artifact` to build an artifact containing a license key that can be validated using the `license-keys.json` file.
 
-Added a `.gitignore` to exclude `node_modules`, `yarn.lock` and `yarn-error.log` as these should not live in the repository.
+## Tasks
 
-Added a `README.md` to explain what steps were taken to create this state.
+- Create a. `update-version` command that updates the version to it's first argument in the following files:
+  - `source-files/index.php`
+  - `source-files/classes/class.php`
+  - `source-files/js/script.js`
+- Create a `licensed-artifact` command that
+  - generates a random 64 character string to serve as a license key.
+  - replaces `"SUPER_SECRET_KEY_HERE"` in `source-files/classes/class.php` with that key.
+  - builds a full artifact as performed in task 2.
+  - resets the license key to `"SUPER_SECRET_KEY_HERE"` in the source code.
+  - updates or creates a `license-keys.json` file that contains an array of license keys.
+    - if the file already exists new keys should be appended to it.
